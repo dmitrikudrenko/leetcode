@@ -2,6 +2,8 @@ package task15;
 
 import java.util.*;
 
+import static java.util.Arrays.binarySearch;
+
 /**
  * Given an array nums of n integers, are there elements a, b, c in nums such that a + b + c = 0?
  * Find all unique triplets in the array which gives the sum of zero.
@@ -13,17 +15,20 @@ public class Solution {
         Arrays.sort(nums);
 
         List<List<Integer>> result = new ArrayList<List<Integer>>();
-        Set<Triple> triples = new HashSet<Triple>();
-        if (nums.length < 3) {
+        Collection<Triple> triples =
+//                new LinkedList<Triple>();
+                new HashSet<Triple>();
+        int length = nums.length;
+        if (length < 3) {
             return result;
         }
 
-        for (int i = 0; i < nums.length - 2; i++) {
+        for (int i = 0; i < length - 2; i++) {
             int first = nums[i];
-            for (int j = nums.length - 1; j > i + 1; j--) {
+            for (int j = i + 1; j < length - 1; j++) {
                 int second = nums[j];
                 int third = SUM - first - second;
-                boolean thirdExists = find(third, nums, i + 1, j) >= 0;
+                boolean thirdExists = (second <= third) && (binarySearch(nums, j + 1, length, third) >= 0);
                 if (thirdExists) {
                     triples.add(new Triple(first, second, third));
                 }
@@ -35,15 +40,11 @@ public class Solution {
         return result;
     }
 
-    private static int find(int what, int[] where, int start, int end) {
-        return Arrays.binarySearch(where, start, end, what);
-    }
-
     private static class Triple {
         private final int[] numbers;
 
         public Triple(int first, int second, int third) {
-            numbers = new int[] {first, second, third};
+            numbers = new int[]{first, second, third};
             Arrays.sort(numbers);
         }
 
@@ -62,6 +63,11 @@ public class Solution {
             result = 31 * result + numbers[1];
             result = 31 * result + numbers[2];
             return result;
+        }
+
+        @Override
+        public String toString() {
+            return Arrays.toString(numbers);
         }
 
         public List<Integer> toList() {
