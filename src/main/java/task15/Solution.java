@@ -1,6 +1,8 @@
 package task15;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static java.util.Arrays.binarySearch;
 
@@ -12,66 +14,40 @@ public class Solution {
     private static final int SUM = 0;
 
     public List<List<Integer>> threeSum(int[] nums) {
+        int length = nums.length;
+        if (length < 3) {
+            return new ArrayList<List<Integer>>();
+        }
+
         Arrays.sort(nums);
 
         List<List<Integer>> result = new ArrayList<List<Integer>>();
-        Collection<Triple> triples =
-//                new LinkedList<Triple>();
-                new HashSet<Triple>();
-        int length = nums.length;
-        if (length < 3) {
-            return result;
-        }
-
         for (int i = 0; i < length - 2; i++) {
             int first = nums[i];
+            if (first > SUM) {
+                continue;
+            }
+            if (i > 0 && first == nums[i - 1]) {
+                continue;
+            }
+
             for (int j = i + 1; j < length - 1; j++) {
                 int second = nums[j];
                 int third = SUM - first - second;
-                boolean thirdExists = (second <= third) && (binarySearch(nums, j + 1, length, third) >= 0);
+                if (j > i + 1 && second == nums[j - 1]) {
+                    continue;
+                }
+                if (third < second) {
+                    break;
+                }
+
+                boolean thirdExists = binarySearch(nums, j + 1, length, third) >= 0;
                 if (thirdExists) {
-                    triples.add(new Triple(first, second, third));
+                    result.add(Arrays.asList(first, second, third));
+                    continue;
                 }
             }
         }
-        for (Triple triple : triples) {
-            result.add(triple.toList());
-        }
         return result;
-    }
-
-    private static class Triple {
-        private final int[] numbers;
-
-        public Triple(int first, int second, int third) {
-            numbers = new int[]{first, second, third};
-            Arrays.sort(numbers);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            Triple triple = (Triple) o;
-
-            if (numbers[0] != triple.numbers[0]) return false;
-            if (numbers[1] != triple.numbers[1]) return false;
-            return numbers[2] == triple.numbers[2];
-        }
-
-        @Override
-        public int hashCode() {
-            int result = numbers[0];
-            result = 31 * result + numbers[1];
-            result = 31 * result + numbers[2];
-            return result;
-        }
-
-        @Override
-        public String toString() {
-            return Arrays.toString(numbers);
-        }
-
-        public List<Integer> toList() {
-            return Arrays.asList(numbers[0], numbers[1], numbers[2]);
-        }
     }
 }
