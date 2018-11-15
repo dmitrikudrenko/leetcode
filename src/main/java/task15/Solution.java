@@ -44,7 +44,6 @@ public class Solution {
                 boolean thirdExists = binarySearch(nums, j + 1, length, third) >= 0;
                 if (thirdExists) {
                     result.add(Arrays.asList(first, second, third));
-                    continue;
                 }
             }
         }
